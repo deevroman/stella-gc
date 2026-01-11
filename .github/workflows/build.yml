@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-stella:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
+
+      - name: Build
+        run: |
+          cmake -B build "-DMAX_ALLOC_SIZE=1024*1024*2"
+          cmake --build build
+
+      - name: Run
+        run: |
+          echo 1 | ./build/stella
+

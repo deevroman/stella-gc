@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-stella:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
+
+      - name: Run tests
+        run: bash run_tests.sh
+
+      - name: Print logs
+        run: |
+          for LOG in tmp/*.log; do
+            echo
+            echo "========== $LOG =========="
+            cat "$LOG"
+            echo "======== END $LOG ========"
+          done
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: stella-logs
+          path: tmp/*.log
+
